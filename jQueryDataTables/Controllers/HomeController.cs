@@ -1,9 +1,11 @@
 ﻿using jQueryDataTables.JsonModels;
 using jQueryDataTables.Models;
+using jQueryDataTables.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 
@@ -29,7 +31,7 @@ namespace jQueryDataTables.Controllers
             int filteredResultsCount;
             int totalResultsCount;
 
-            var result = CustomEmployeeSearch(model, out filteredResultsCount, out totalResultsCount);
+            var result = CustomSearch(model, out filteredResultsCount, out totalResultsCount);
 
             return Json(new
             {
@@ -47,7 +49,7 @@ namespace jQueryDataTables.Controllers
             });
         }
 
-        private IList<Employee> CustomEmployeeSearch(DataTableAjaxPostModel model, out int filteredResultsCount, out int totalResultsCount)
+        private IList<Employee> CustomSearch(DataTableAjaxPostModel model, out int filteredResultsCount, out int totalResultsCount)
         {
             var searchBy = (model.search != null) ? model.search.value : null;
             var take = model.length;
@@ -59,8 +61,10 @@ namespace jQueryDataTables.Controllers
             if (model.order != null)
             {
                 // in this example we just default sort on the 1st column
-                sortBy = model.columns[model.order[0].column].data;
-                sortDir = model.order[0].dir.ToLower() == "asc";
+                var order = model.order.FirstOrDefault();
+
+                sortBy = model.columns[order.column].data;
+                sortDir = order.dir.ToLower() == "asc";
             }
 
             var result = GetEmployeesBySearch(searchBy, take, skip, sortBy, sortDir, out filteredResultsCount, out totalResultsCount);
@@ -74,26 +78,20 @@ namespace jQueryDataTables.Controllers
 
         private IList<Employee> GetEmployeesBySearch(string searchBy, int take, int skip, string sortBy, bool sortDir, out int filteredResultsCount, out int totalResultsCount)
         {
-            //
-            if (string.IsNullOrEmpty(searchBy))
-            {
-                sortBy = "Id";
-                sortDir = true;
-            }
-
-            var result = string.IsNullOrEmpty(searchBy) ?
-                _appContext.Employees
-                    .OrderBy(f => f.LastName)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToList()
+            var query = string.IsNullOrEmpty(searchBy) ?
+                _appContext.Employees.AsQueryable()
                 :
                 _appContext.Employees
-                    .Where(w => w.FirstName.ToLower().Contains(searchBy) || w.LastName.ToLower().Contains(searchBy))
-                    .OrderBy(f => f.LastName)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToList();
+                    .Where(w => w.FirstName.ToLower().Contains(searchBy) || w.LastName.ToLower().Contains(searchBy));
+
+            var result = sortDir ? query.OrderBy(sortBy)
+                                        .Skip(skip)
+                                        .Take(take)
+                                        .ToList()
+                                 : query.OrderByDescending(sortBy)
+                                        .Skip(skip)
+                                        .Take(take)
+                                        .ToList();
 
             totalResultsCount = _appContext.Employees.Count();
             filteredResultsCount = string.IsNullOrEmpty(searchBy) ? totalResultsCount : _appContext.Employees
@@ -101,7 +99,6 @@ namespace jQueryDataTables.Controllers
 
             return result;
         }
-
 
         public ActionResult About()
         {
