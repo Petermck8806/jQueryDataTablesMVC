@@ -8,10 +8,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace jQueryDataTables.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         //db context please
         private ApplicationDbContext _appContext;
@@ -27,56 +29,21 @@ namespace jQueryDataTables.Controllers
         }
 
         public ActionResult SearchEmployeeAction(DataTableAjaxPostModel model)
-       {
-            int filteredResultsCount;
-            int totalResultsCount;
+        {
+            var result = CustomSearch(model, GetEmployeesBySearch);
 
-            var result = CustomSearch(model, out filteredResultsCount, out totalResultsCount);
-
-            return Json(new
+            var x = Json(new
             {
                 draw = model.draw,
-                recordsTotal = totalResultsCount,
-                recordsFiltered = filteredResultsCount,
-                data = result.Select(s => new
-                {
-                    FirstName = s.FirstName,
-                    LastName = s.LastName,
-                    MiddleName = s.MiddleName,
-                    StartDate = s.StartDate.Value.ToShortDateString(),
-                    BirthDate = s.BirthDate.ToShortDateString()
-                })
+                recordsFiltered = result.Item1,
+                recordsTotal = result.Item2,
+                data = result.Item3
             });
+
+            return x;
         }
 
-        private IList<Employee> CustomSearch(DataTableAjaxPostModel model, out int filteredResultsCount, out int totalResultsCount)
-        {
-            var searchBy = (model.search != null) ? model.search.value : null;
-            var take = model.length;
-            var skip = model.start;
-
-            string sortBy = "";
-            bool sortDir = true;
-
-            if (model.order != null)
-            {
-                // in this example we just default sort on the 1st column
-                var order = model.order.FirstOrDefault();
-
-                sortBy = model.columns[order.column].data;
-                sortDir = order.dir.ToLower() == "asc";
-            }
-
-            var result = GetEmployeesBySearch(searchBy, take, skip, sortBy, sortDir, out filteredResultsCount, out totalResultsCount);
-            if(result == null)
-            {
-                return new List<Employee>();
-            }
-
-            return result;
-        }
-
-        private IList<Employee> GetEmployeesBySearch(string searchBy, int take, int skip, string sortBy, bool sortDir, out int filteredResultsCount, out int totalResultsCount)
+        private Tuple<int, int, string> GetEmployeesBySearch(string searchBy, int take, int skip, string sortBy, bool sortDir)
         {
             var query = string.IsNullOrEmpty(searchBy) ?
                 _appContext.Employees.AsQueryable()
@@ -93,11 +60,11 @@ namespace jQueryDataTables.Controllers
                                         .Take(take)
                                         .ToList();
 
-            totalResultsCount = _appContext.Employees.Count();
-            filteredResultsCount = string.IsNullOrEmpty(searchBy) ? totalResultsCount : _appContext.Employees
+            int totalResultsCount = _appContext.Employees.Count();
+            int filteredResultsCount = string.IsNullOrEmpty(searchBy) ? totalResultsCount : _appContext.Employees
                     .Where(w => w.FirstName.ToLower().Contains(searchBy) || w.LastName.ToLower().Contains(searchBy)).Count();
 
-            return result;
+            return Tuple.Create(filteredResultsCount, totalResultsCount, JsonConvert.SerializeObject(result.ToList(), new IsoDateTimeConverter() { DateTimeFormat = "MM/dd/yyyy" }));
         }
 
         public ActionResult About()

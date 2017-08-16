@@ -28,6 +28,10 @@
                 "ajax": {
                     url: "@Url.Action("SearchEmployeeAction", "Home")",
                     type: "POST",
+                    dataSrc: function (data) {
+                        console.log(data);
+                        return JSON.parse(data.data);
+                    }
                 },
                 "language": {
                     "search": "",
