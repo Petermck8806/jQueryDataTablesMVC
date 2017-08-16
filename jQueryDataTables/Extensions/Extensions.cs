@@ -9,6 +9,7 @@ namespace jQueryDataTables.Extensions
 {
     public static class Extensions
     {
+        //IQueryableExtensions to allow for order by any property in object
         public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
         {
             return ApplyOrder<T>(source, property, "OrderBy");
