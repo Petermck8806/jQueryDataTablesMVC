@@ -13,8 +13,10 @@ namespace jQueryDataTables.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
-
         public DateTime BirthDate { get; set; }
         public DateTime? StartDate { get; set; }
+
+        [MaxLength(1)]
+        public string Sex { get; set; }
     }
 }

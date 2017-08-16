@@ -6,7 +6,7 @@
 </h4>
 <hr />
 <div class="row">
-    <table id="employeeTable" class="table table-striped" cellspacing="0">
+    <table id="employeeTable" class="table table-striped dt-responsive dt-nowrap" cellspacing="0">
         <thead>
             <tr>
                 <th>First Name</th>
@@ -14,10 +14,13 @@
                 <th>Middle Initial</th>
                 <th>Start Date</th>
                 <th>Birth Date</th>
+                <th>Sex</th>
             </tr>
         </thead>
     </table>
 </div>
+
+
 
 @section Scripts{
     <script>
@@ -29,7 +32,6 @@
                     url: "@Url.Action("SearchEmployeeAction", "Home")",
                     type: "POST",
                     dataSrc: function (data) {
-                        console.log(data);
                         return JSON.parse(data.data);
                     }
                 },
@@ -39,12 +41,13 @@
                 },
                 "columns": [
                         { "data": "FirstName" },
-                        { "data": "LastName"  },
+                        { "data": "LastName" },
                         { "data": "MiddleName" },
                         { "data": "StartDate" },
-                        { "data": "BirthDate" }
+                        { "data": "BirthDate" },
+                        { "data": "Sex" }
                 ]
             });
         });
-    </script>    
+    </script>
 }

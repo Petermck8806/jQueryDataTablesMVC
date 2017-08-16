@@ -31,7 +31,8 @@ namespace jQueryDataTables.Migrations
                         StartDate = DateTime.Now,
                         FirstName = RandomString(7, RandomStringType.Alpha),
                         LastName = RandomString(10, RandomStringType.Alpha),
-                        MiddleName = RandomString(1, RandomStringType.Alpha)
+                        MiddleName = RandomString(1, RandomStringType.Alpha),
+                        Sex = _rng.Next() % 2 == 0 ? "M" : "F"
                     });
                 }
             }
