@@ -20,7 +20,6 @@ namespace jQueryDataTables.Controllers
 
             if (model.order != null)
             {
-                // in this example we just default sort on the 1st column
                 var order = model.order.FirstOrDefault();
 
                 sortBy = model.columns[order.column].data;
