@@ -1,7 +1,10 @@
 ﻿using Autofac;
 using jQueryDataTables.App_Start;
+using jQueryDataTables.Migrations;
+using jQueryDataTables.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -19,6 +22,8 @@ namespace jQueryDataTables
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AutofacConfig.Register();
+            Database.SetInitializer<ApplicationDbContext>(
+                new MigrateDatabaseToLatestVersion<ApplicationDbContext, Configuration>());
         }
     }
 }

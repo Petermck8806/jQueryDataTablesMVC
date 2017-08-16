@@ -1,3 +1,6 @@
+using jQueryDataTables.Models;
+using System.Data.Entity;
+
 namespace jQueryDataTables.Migrations
 {
     using System;
@@ -18,16 +21,19 @@ namespace jQueryDataTables.Migrations
 
         protected override void Seed(jQueryDataTables.Models.ApplicationDbContext context)
         {
-            for(int i = 0; i < 10000; i++)
+            if (!context.Employees.Any())
             {
-                context.Employees.AddOrUpdate(new Models.Employee
+                for (int i = 0; i < 1000; i++)
                 {
-                    BirthDate = DateTime.Now.AddYears(-30),
-                    StartDate = DateTime.Now,
-                    FirstName = RandomString(7, RandomStringType.Alpha),
-                    LastName = RandomString(10, RandomStringType.Alpha),
-                    MiddleName = RandomString(1, RandomStringType.Alpha)
-                });
+                    context.Employees.AddOrUpdate(new Models.Employee
+                    {
+                        BirthDate = DateTime.Now.AddYears(-30),
+                        StartDate = DateTime.Now,
+                        FirstName = RandomString(7, RandomStringType.Alpha),
+                        LastName = RandomString(10, RandomStringType.Alpha),
+                        MiddleName = RandomString(1, RandomStringType.Alpha)
+                    });
+                }
             }
             
             //  This method will be called after migrating to the latest version.
