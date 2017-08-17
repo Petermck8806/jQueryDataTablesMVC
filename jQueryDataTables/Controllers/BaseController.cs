@@ -9,6 +9,13 @@ namespace jQueryDataTables.Controllers
 {
     public class BaseController : Controller
     {
+        /// <summary>
+        /// Returns the items found in the search function passed to CustomSearch (GetItemsBySearch). 
+        /// This method handles interpretting the sortyBy and sortDir vars as well as the pagination vars skip/take.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="GetItemsBySearch"></param>
+        /// <returns></returns>
         public Tuple<int, int, string> CustomSearch(DataTableAjaxPostModel model, Func<string, int, int, string, bool, Tuple<int, int, string>> GetItemsBySearch)
         {
             var searchBy = (model.search != null) ? model.search.value : null;

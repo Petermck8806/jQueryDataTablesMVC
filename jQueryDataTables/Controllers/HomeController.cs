@@ -28,6 +28,11 @@ namespace jQueryDataTables.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Search the Employee entity and return the result as a json action result. JSON must be parsed into array on client side.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public ActionResult SearchEmployeeAction(DataTableAjaxPostModel model)
         {
             var result = CustomSearch(model, GetEmployeesBySearch);
@@ -43,7 +48,17 @@ namespace jQueryDataTables.Controllers
             return x;
         }
 
-        private Tuple<int, int, string> GetEmployeesBySearch(string searchBy, int take, int skip, string sortBy, bool sortDir)
+        /// <summary>
+        /// Search Employee entities by First and Last name. Paginate the results, sort results. Return the results as json and
+        /// the count of filtered results / total results.
+        /// </summary>
+        /// <param name="searchBy"></param>
+        /// <param name="take"></param>
+        /// <param name="skip"></param>
+        /// <param name="sortBy"></param>
+        /// <param name="sortDir"></param>
+        /// <returns></returns>
+        private Tuple<int, int, string> GetEmployeesBySearch(string searchBy, int take, int skip, string sortBy, bool sortDir )
         {
             var query = string.IsNullOrEmpty(searchBy) ?
                 _appContext.Employees.AsQueryable()
@@ -65,20 +80,6 @@ namespace jQueryDataTables.Controllers
                     .Where(w => w.FirstName.ToLower().Contains(searchBy) || w.LastName.ToLower().Contains(searchBy)).Count();
 
             return Tuple.Create(filteredResultsCount, totalResultsCount, JsonConvert.SerializeObject(result.ToList(), new IsoDateTimeConverter() { DateTimeFormat = "MM/dd/yyyy" }));
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
     }
 }
