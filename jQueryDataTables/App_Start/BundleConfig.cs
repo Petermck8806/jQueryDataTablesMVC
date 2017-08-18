@@ -21,7 +21,9 @@ namespace jQueryDataTables
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/bootstrap-datepicker.js",
+                      "~/Scripts/respond.js",
+                      "~/Scripts/Site.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/datatables").Include(
             "~/Scripts/DataTables/jquery.dataTables.min.js",
@@ -30,6 +32,7 @@ namespace jQueryDataTables
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/DataTables/css/dataTables.bootstrap.min.css",
+                      "~/Content/bootstrap-datepicker3.min.css",
                       "~/Content/site.css"));
         }
     }

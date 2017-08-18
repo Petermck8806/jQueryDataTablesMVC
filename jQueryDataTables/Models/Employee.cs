@@ -10,9 +10,13 @@ namespace jQueryDataTables.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+        [MaxLength(1)]
         public string MiddleName { get; set; }
+        [Required]
         public DateTime BirthDate { get; set; }
         public DateTime? StartDate { get; set; }
 
