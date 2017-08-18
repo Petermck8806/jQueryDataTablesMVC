@@ -30,7 +30,7 @@ namespace jQueryDataTables.Controllers
                 var order = model.order.FirstOrDefault();
 
                 sortBy = model.columns[order.column].data;
-                sortDir = order.dir.ToLower() == "asc";
+                sortDir = order.dir == null ? true : order.dir.ToLower() == "asc";
             }
 
             var result = GetItemsBySearch(searchBy, take, skip, sortBy, sortDir);

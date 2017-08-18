@@ -37,13 +37,14 @@
                 "processing": true, // for show progress bar
                 "serverSide": true, // for process server side
                 "rowId": "Id",
-                "ajax": {
+                "ajax": $.fn.dataTable.pipeline({
                     url: "@Url.Action("SearchEmployeeAction", "Home")",
                     type: "POST",
                     dataSrc: function (data) {
                         return JSON.parse(data.data);
-                    }
-                },
+                    },
+                    pages: 5
+                }),
                 "language": {
                     "search": "",
                     "searchPlaceholder": "Search..."
