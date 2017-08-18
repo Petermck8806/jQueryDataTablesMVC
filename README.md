@@ -1,3 +1,3 @@
 # jQueryDataTablesMVC
 
-Currently, the build can be viewed here: http://jquerydatatablesmvc.azurewebsites.net/
+Currently, the build can be viewed here: https://jquerydatatablesmvc.azurewebsites.net/
