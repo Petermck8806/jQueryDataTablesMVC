@@ -27,10 +27,10 @@ namespace jQueryDataTables.Migrations
                 {
                     context.Employees.AddOrUpdate(new Models.Employee
                     {
-                        BirthDate = DateTime.Now.AddYears(-30),
-                        StartDate = DateTime.Now,
-                        FirstName = RandomString(7, RandomStringType.Alpha),
-                        LastName = RandomString(10, RandomStringType.Alpha),
+                        BirthDate = Faker.DateTimeFaker.DateTime(DateTime.Parse("1/1/1950"),DateTime.Parse("1/1/1999")),
+                        StartDate = Faker.DateTimeFaker.DateTime(),
+                        FirstName = Faker.NameFaker.FirstName(),
+                        LastName = Faker.NameFaker.LastName(),
                         MiddleName = RandomString(1, RandomStringType.Alpha),
                         Sex = _rng.Next() % 2 == 0 ? "M" : "F"
                     });
